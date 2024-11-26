@@ -1,0 +1,25 @@
+package com.devsuperior.uri2611.repositories;
+
+import com.devsuperior.uri2611.dto.MovieMinDTO;
+import com.devsuperior.uri2611.entities.Movie;
+import com.devsuperior.uri2611.projections.MovieMinProjections;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+
+import java.util.List;
+
+public interface MovieRepository extends JpaRepository<Movie, Long> {
+
+    @Query(nativeQuery = true, value = "SELECT movies.id, movies.name "
+            +"FROM movies "
+            +"INNER JOIN genres on "
+            + "movies.id_genres=genres.id "
+            + "WHERE genres.description = :name")
+    List<MovieMinProjections> search1(String name);
+
+    @Query("SELECT new com.devsuperior.uri2611.dto.MovieMinDTO() "
+            +"FROM Movie obj "
+            +"WHERE obj.genre.description = :name")
+    List<MovieMinDTO> search2(String name);
+
+}
